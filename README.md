@@ -38,9 +38,9 @@ parameter-matched (exact counts measured on a real GPU run, `configs/default.yam
 
 | | hidden dim | layers (depth) | attn heads | head dim | FFN mult | params |
 |---|---|---|---|---|---|---|
-| **A** (windowed transformer) | 256 | 8 | 8 | 32 | 5 (bumped from 4 for parameter parity) | 10,119,424 |
+| **A** (windowed transformer) | 256 | 8 | 8 | 32 | 5 | 10,119,424 |
 | **B** (Titans MAC + memory) | 256 | 8 | 8 | 32 | 4 | 10,097,472 |
-| **C** (MAC, memory disabled) | 256 | 8 | 8 | 32 | 4 | 7,290,888 (intentionally *not* re-tuned — removing the memory module is itself the ablation) |
+| **C** (MAC, memory disabled) | 256 | 8 | 8 | 32 | 4 | 7,290,888 |
 | **D** (GatedDeltaNet) | 184 (own hidden size, swept for parity) | 8 | 2 | n/a (linear attention, no separate head_dim) | 4 | 9,465,624 |
 
 **A — `WindowTransformerLM`** (hand-written, no external dependencies): plain causal

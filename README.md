@@ -1,17 +1,15 @@
 # Titans NIAH Experiments
 
-Does the [Titans](https://arxiv.org/abs/2501.00663) neural long-term memory mechanism
-("Memory as Context", via [`lucidrains/titans-pytorch`](https://github.com/lucidrains/titans-pytorch))
-actually extend passkey retrieval beyond what plain local attention can do — and is
-that retrieval *causally* driven by the memory module's test-time writes, rather than
-by attention or some other architectural detail?
+Small-scale tests on [Titans](https://arxiv.org/abs/2501.00663) neural long-term memory mechanism
+("Memory as Context", via [`lucidrains/titans-pytorch`](https://github.com/lucidrains/titans-pytorch)).
 
-A byte-level, single-passkey "needle in a haystack" task (vocab=256, no tokenizer) is
-used to test this directly against three baselines: a hand-written sliding-window
+Defines a simple byte-level, single-passkey "needle in a haystack" task (vocab=256, no tokenizer) to test Titans MAC  against three baselines: a hand-written sliding-window
 transformer (**A**, no long-range mechanism at all), the same MAC scaffold with memory
 disabled (**C**, isolates whether the extra scaffolding — persistent/long-term tokens,
 segmented attention, hyper-connections — matters on its own), and GatedDeltaNet
-(**D**, a non-Titans linear-attention/delta-rule alternative).
+(**D**, a non-Titans linear-attention/delta-rule alternative). 
+
+By Thilina Balasooriya for COMS 6998 CLMM Fall 2026 w/ Prof. Richard Zemel.
 
 ## Experiments
 
@@ -59,7 +57,4 @@ PYTHONPATH=. python3 experiments/make_tables.py
 All outputs (checkpoints, logs, the NIAH grid, CSVs, LaTeX tables) are written under
 `results/` (gitignored).
 
-## Findings
-
-_TODO — this run is in progress; findings will be added once complete, from the actual
-measured results, not written ahead of time._
+This repo was created using Claude Code.

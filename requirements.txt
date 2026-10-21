@@ -1,0 +1,14 @@
+# Versions verified working together on a real GPU node (NERSC Perlmutter,
+# A100-PCIE-40GB, cudatoolkit/12.9 module loaded).
+torch==2.14.1
+titans-pytorch==0.5.5
+numpy==2.4.6
+pandas==3.0.6
+matplotlib==3.11.2
+pyyaml==6.0.3
+
+# Needed for model D (GatedDeltaNet). Requires a working Triton + nvcc toolchain at
+# RUNTIME, not just install time (on NERSC Perlmutter: `module load cudatoolkit/12.9`).
+# NOTE: this model's Triton kernel cannot run in true fp32 on an A100 (shared-memory
+# limit) -- it is trained under bf16 autocast, see experiments/common/pipeline.py.
+flash-linear-attention==0.5.2

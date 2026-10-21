@@ -1,0 +1,68 @@
+# SMOKE tier: small but real (minutes, not seconds). Notebook default.
+#
+# Param counts actually measured on a real GPU node (see FRICTION_LOG.md), B is the
+# pivot: A=8,542,464 (-15.4%) -> ff_mult raised to 5 below -> 10,119,424 (+0.2%).
+# B=10,097,472. D swept over hidden_size candidates -> 184 -> 9,465,624 (-6.3%).
+# C=7,290,888 (-27.8%) is intentionally NOT re-tuned — it's B minus the memory module
+# by construction (DECISIONS.md D5-equivalent reasoning in PLAN.md); re-tuning it would
+# weaken the ablation, so this gap is reported honestly rather than hidden.
+tier: smoke
+models: [A, B, C, D]
+results_dir: results
+device: cuda
+run_extension: true
+run_chunk_sweep: false
+
+data:
+  vocab_size: 256
+  train_len_min: 256
+  train_len_max: 1024
+  window_for_training: 128
+  eval_lengths: [256, 512, 1024]
+  eval_lengths_extended: []
+  eval_depths: [0.1, 0.3, 0.5, 0.7, 0.9]
+  eval_examples_per_cell: 20
+  eval_micro_batch: 10
+  sanity_length: 128
+  sanity_window: 128
+  sanity_examples: 100
+  sanity_min_accuracy: 0.98
+  passkey_digits: 5
+  aux_lm_loss_weight: 0.0
+  seed: 0
+
+train:
+  steps: 150
+  batch_size: 4  # reduced from 16 after a real OOM on a shared GPU (another process was
+                 # using ~30GB of the 40GB A100); see FRICTION_LOG.md / DECISIONS.md D14
+  lr_sweep: [1.0e-4, 3.0e-4, 1.0e-3]
+  lr_sweep_step_fraction: 0.2
+  optimizer: adamw
+  weight_decay: 0.01
+  schedule: cosine
+  warmup_steps: 10
+  grad_clip: 1.0
+  bf16: true
+  seeds: [0]
+  max_minutes_per_run: 10
+  eval_every: null
+
+model_base:
+  dim: 256
+  depth: 8
+  heads: 8
+  dim_head: 32
+  ff_mult: 4
+  segment_len: 128
+  num_persist_mem_tokens: 4
+  num_longterm_mem_tokens: 16
+  neural_memory_mlp_dim: 64
+  neural_memory_mlp_depth: 2
+  max_dense_mask_bytes: 268435456
+
+model_overrides:
+  A:
+    ff_mult: 5
+  D:
+    fla_hidden_size: 184
+    fla_num_heads: 2
